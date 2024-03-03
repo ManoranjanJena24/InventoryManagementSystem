@@ -9,9 +9,9 @@ exports.postAddItem = (req, res, next) => {
     const quantity = req.body.quantity;
     Item.create({
         item_name: item_name,
-        price: price,
-        imageUrl: imageUrl,
         description: description,
+        price: price,
+        quantity: quantity,
 
     }).then((result) => {
         console.log("Created Product")
@@ -24,22 +24,19 @@ exports.postAddItem = (req, res, next) => {
 
 
 
-// todo 
-exports.postEditProduct = (req, res, next) => {
-    const prodId = req.body.productId;
-    const updatedTitle = req.body.title
-    const updatedPrice = req.body.price
-    const updatedImageUrl = req.body.imageUrl
-    const updatedDesc = req.body.description
-    Product.findByPk(prodId).then((product) => {
-        product.title = updatedTitle
-        product.price = updatedPrice
-        product.imageUrl = updatedImageUrl
-        product.description = updatedDesc
-        return product.save();
+exports.postEditItem = (req, res, next) => {
+    console.log('Inside Edit')
+    const id = req.body.id;
+    const updatedQuantity = req.body.quantity
+    Item.findByPk(id).then((item) => {
+        item.tem_name = req.body.item_name
+        item.description = req.body.description
+        item.price = req.body.price
+        item.quantity = updatedQuantity
+        return item.save();
     }).then((result) => {
         console.log("Updated")
-        res.redirect('/admin/products');
+        res.send('Updated successfully!')
     }).catch((err) => {
         console.log(err)
     })
@@ -47,11 +44,12 @@ exports.postEditProduct = (req, res, next) => {
 
 }
 
-//  todo
+//  changed
 exports.getItems = (req, res, next) => {
-    req.user.getItems().then((rows) => {
-    res.send(rows)
-
+    console.log('Inside Get Items')
+    Item.findAll().then((items) => {
+        console.log("fetched Items")
+        res.json(items)
     }).catch((err) => {
         console.log(err)
     })

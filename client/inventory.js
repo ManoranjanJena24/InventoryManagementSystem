@@ -8,6 +8,7 @@ function handleFormSubmit(event){
         price:document.getElementById('price').value,
         quantity:document.getElementById('quantity').value,
     }
+    event.target.reset();
     postItem(item)
   
 }
@@ -16,14 +17,14 @@ function getItems(){
     axios.get(url)
     .then((response)=>{
         console.log('Fetched items')
-        renderItems(response)
+        renderItems(response.data)
     })
     .catch(err=>console.log(err))
 }
 
 // http://localhost:3000/update-item
-function updateItem(item){
-    axios.post(`${url}/update-item`,item).then(()=>{
+function updateItem(item,id){
+    axios.post(`${url}/update-item/${id}`,item).then(()=>{
         getItems()
     }).catch(err=>{
         console.log(err)
@@ -42,8 +43,9 @@ function postItem(item){
 function renderItems(items) {
     const mainContent = document.getElementById('mainContent');
     mainContent.innerHTML = ''; // Clear previous content
-
+    
     items.forEach(item => {
+        const id = item.id;
         const itemContainer = document.createElement('div');
         itemContainer.classList.add('item-container');
 
@@ -67,7 +69,7 @@ function renderItems(items) {
         buyOneButton.textContent = 'Buy One';
         buyOneButton.addEventListener('click', () => {
             item.quantity -= 1;
-            updateItem(item);
+            updateItem(item,id);
         });
         itemContainer.appendChild(buyOneButton);
 
@@ -75,7 +77,7 @@ function renderItems(items) {
         buyTwoButton.textContent = 'Buy Two';
         buyTwoButton.addEventListener('click', () => {
             item.quantity -= 2;
-            updateItem(item);
+            updateItem(item,id);
         });
         itemContainer.appendChild(buyTwoButton);
 
@@ -83,7 +85,7 @@ function renderItems(items) {
         buyThreeButton.textContent = 'Buy Three';
         buyThreeButton.addEventListener('click', () => {
             item.quantity -= 3;
-            updateItem(item);
+            updateItem(item,id);
         });
         itemContainer.appendChild(buyThreeButton);
 
